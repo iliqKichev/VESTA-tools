@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Defined files
+atoms_numbers.txt
+atoms_numbers_output.txt
+CONTCAR
+in/
