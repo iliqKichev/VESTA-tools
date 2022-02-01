@@ -131,5 +131,7 @@ dmypy.json
 # Defined files
 atoms_numbers.txt
 atoms_numbers_output.txt
+atom_type_CL.txt
+atom_type_CL_output.txt
 CONTCAR
 in/
