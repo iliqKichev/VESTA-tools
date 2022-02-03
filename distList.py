@@ -105,44 +105,45 @@ def print_in_xyz_format(atoms: Dict[str, Atom], comment: str = "") -> None:
         print(atoms[a])
 
 
-def iterate_over_bonds(file_name: str) -> List[Tuple[str, str, float]]:
-    with open(file_name) as file:
-        # Load the atoms
-        atoms, bravais = load_contcar(args.filename)
+def iterate_over_bonds(contcar_filename: str, atom_type: str, count_length: float) -> List[Tuple[str, str, float]]:
+    # Load the atoms
+    atoms, bravais = load_contcar(contcar_filename)
 
-        # print_in_xyz_format(atoms)
+    # print_in_xyz_format(atoms)
 
-        atom_type, count_length_str = file.readline().split()
+    selected_atoms = [i for i in atoms if atom_type in i]
 
-        selected_atoms = [i for i in atoms if atom_type in i]
+    output: List[Tuple[str, str, float]] = list()
 
-        output: List[Tuple[str, str, float]] = list()
+    for i in range(len(selected_atoms)):
+        for j in range(i, len(selected_atoms)):
+            ind_1 = selected_atoms[i]
+            ind_2 = selected_atoms[j]
+            length = atoms[ind_1].periodic_dist(atoms[ind_2], bravais)
+            if length <= count_length and ind_2 != ind_1:
+                output.append((ind_1, ind_2, length))
 
-        for i in range(len(selected_atoms)):
-            for j in range(i, len(selected_atoms)):
-                ind_1 = selected_atoms[i]
-                ind_2 = selected_atoms[j]
-                length = atoms[ind_1].periodic_dist(atoms[ind_2], bravais)
-                if length <= float(count_length_str) and ind_2 != ind_1:
-                    output.append((ind_1, ind_2, length))
-
-        return output
-        # for d in pairs:
-        #     ind_1 = d.split()[0]
-        #     ind_2 = d.split()[1]
-        #     length = atoms[ind_1].periodic_dist(atoms[ind_2], bravais)
-        #     output.append((ind_1, ind_2, length))
-        # return output
+    return output
+    # for d in pairs:
+    #     ind_1 = d.split()[0]
+    #     ind_2 = d.split()[1]
+    #     length = atoms[ind_1].periodic_dist(atoms[ind_2], bravais)
+    #     output.append((ind_1, ind_2, length))
+    # return output
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("filename")
-    parser.add_argument("atoms_numbers_file")
-    parser.add_argument("-o")
+    parser.add_argument("filename", type=str)
+    parser.add_argument("-o", type=str)
+    parser.add_argument("-at", type=str)
+    parser.add_argument("-cl", type=float)
     args = parser.parse_args()
 
-    output: List[Tuple[str, str, float]] = iterate_over_bonds(args.atoms_numbers_file)
+    atom_type: str = args.at if args.at else "Li"
+    count_length: float = args.cl if args.cl else 5.0
+
+    output: List[Tuple[str, str, float]] = iterate_over_bonds(args.filename, atom_type, count_length)
 
     if args.o is not None:
         with open(args.o, "w") as f:

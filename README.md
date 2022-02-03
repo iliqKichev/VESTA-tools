@@ -21,3 +21,17 @@ This is a simple script that gets the distance between two atoms in a periodic s
 ### Requirements
 - python 3.6+
 - numpy
+
+---
+## distList.py
+This is a simple script that lists all the distances between atoms from one element bellow a certain counting length.
+### Usage
+`python3 distList.py <input_CONTCAR> -at <atoms_type> -cl <counting_length> -o <output_file>`
+- **optional** `-at <atom_type>` specifies the atomic type. The default is Li.
+- **optional** `-cl <counting_length>` specifies the maximum distance. The default is 5.0 Angstroms.
+- `-o <output_file>` is mandatory; in it the format is 
+> A1 A2 L
+> Where A1 and A2 are atoms from the VESTA labeling system and L is the distance in Angstroms
+### Requirements
+- python 3.6+
+- numpy
